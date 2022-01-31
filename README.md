@@ -6,7 +6,7 @@ Image classification is a common problem in deep learning. In this notebook, we 
 ## Package Import
 
 
-```
+```python
 import tensorflow as tf
 import tensorflow_datasets as tfds
 import matplotlib.pyplot as plt
@@ -18,7 +18,7 @@ from google.colab import files
 ```
 
 
-```
+```python
 print("Num GPUs Available: ", len(tf.config.experimental.list_physical_devices('GPU')))
 ```
 
@@ -28,7 +28,7 @@ print("Num GPUs Available: ", len(tf.config.experimental.list_physical_devices('
 ## Image Classifier
 
 
-```
+```python
 def preprocess(ds, img_height, img_width, metadata, batch_size = 32, shuffle=True):
     """ a dataset wrapper that resizes images """
     # resize images as the specified height and width
@@ -56,7 +56,7 @@ Under the class of ImageClassifier, we define the convolutional neural network a
 
 
 
-```
+```python
 class ImageClassifier:
     def __init__(self, train_ds, test_ds, metadata, 
                  img_height, img_width, img_depth=3, batch_size=32, 
@@ -256,7 +256,7 @@ The model and supporting functions can be applied to various dataset.
 Imagenette is a subset of 10 easily classified classes from the Imagenet dataset. We use this dataset to quickly test the capabilities of the generic network.
 
 
-```
+```python
 # create training and testing datasets
 (train_ds, test_ds), metadata = tfds.load( 
     'imagenette/320px-v2',
@@ -285,13 +285,9 @@ print(train_ds)
 
 ![svg](classifier_files/classifier_12_1.svg)
 
+We first test the code without data augmentation and dropout.
 
-    ['n01440764', 'n02102040', 'n02979186', 'n03000684', 'n03028079', 'n03394916', 'n03417042', 'n03425413', 'n03445777', 'n03888257']
-    <PrefetchDataset shapes: ((None, None, 3), ()), types: (tf.uint8, tf.int64)>
-
-
-
-```
+```python
 # client code for testing
 IMG_SIZE = 180
 imagenette = ImageClassifier(train_ds, test_ds, metadata, IMG_SIZE, IMG_SIZE, 
@@ -302,8 +298,9 @@ imagenette.evaluate()
 imagenette.print_confusion_matrix(alt_label=True)
 ```
 
+Accuracy improves using data augmentation and dropout.
 
-```
+```python
 # test effectiveness of data augmentation and dropout
 IMG_SIZE = 180
 imagenette = ImageClassifier(train_ds, test_ds, metadata, IMG_SIZE, IMG_SIZE, 
@@ -397,7 +394,7 @@ imagenette.print_confusion_matrix(alt_label=True)
 
 
 
-```
+```python
 # make some predictions
 URL = 'https://upload.wikimedia.org/wikipedia/commons/e/ef/Golf_ball_near_green.jpg'
 golf_path1 = tf.keras.utils.get_file('golfball1.jpg', origin=URL)
@@ -496,7 +493,7 @@ imagenette.find_similar(parachute_path1, 5, alt_label=True, tolerance=20, search
 Cats vs Dogs is a binary image classification problem which is fun to play with.
 
 
-```
+```python
 # create training and testing datasets
 (train_ds, test_ds), metadata = tfds.load( 
     'cats_vs_dogs',
@@ -523,8 +520,7 @@ print(metadata.features["label"].names)
 
 
 
-```
-# client code for testing
+```python
 IMG_SIZE = 150
 cats_vs_dogs = ImageClassifier(train_ds, test_ds, metadata, IMG_SIZE, IMG_SIZE, 
                                augment=True, dropout=True)
@@ -619,7 +615,7 @@ cats_vs_dogs.print_confusion_matrix()
 With the trained network, we can make predictions on new images, and find similar images according to their class and colour palette.
 
 
-```
+```python
 URL = 'https://i.insider.com/5484d9d1eab8ea3017b17e29?width=600&format=jpeg&auto=webp'
 dog_path1 = tf.keras.utils.get_file('dog1', origin=URL)
 cats_vs_dogs.query(dog_path1)
@@ -716,7 +712,7 @@ cats_vs_dogs.find_similar(dog_path3, 5, tolerance=15)
 Malaria is a disease caused by a parasite which is spread to humans through the bites of infected mosquitoes. This dataset contains a total of 27,558 cell images with equal instances of parasitized and uninfected cells from the thin blood smear slide images of segmented cells, labelled parasitized and uninfected.
 
 
-```
+```python
 # create training and testing datasets
 (train_ds, test_ds), metadata = tfds.load( 
     'malaria',
@@ -731,38 +727,9 @@ fig = tfds.show_examples(train_ds, metadata)
 print(metadata.features["label"].names)
 ```
 
-    [1mDownloading and preparing dataset malaria/1.0.0 (download: 337.08 MiB, generated: Unknown size, total: 337.08 MiB) to /root/tensorflow_datasets/malaria/1.0.0...[0m
+   
 
-
-
-    Dl Completed...: 0 url [00:00, ? url/s]
-
-
-
-    Dl Size...: 0 MiB [00:00, ? MiB/s]
-
-
-
-    Extraction completed...: 0 file [00:00, ? file/s]
-
-
-    
-    
-    
-
-
-
-    0 examples [00:00, ? examples/s]
-
-
-    Shuffling and writing examples to /root/tensorflow_datasets/malaria/1.0.0.incompleteHM3ELV/malaria-train.tfrecord
-
-
-
-      0%|          | 0/27558 [00:00<?, ? examples/s]
-
-
-    [1mDataset malaria downloaded and prepared to /root/tensorflow_datasets/malaria/1.0.0. Subsequent calls will reuse this data.[0m
+    Dataset malaria downloaded and prepared to /root/tensorflow_datasets/malaria/1.0.0. Subsequent calls will reuse this data.
     train: 13779
     test:  2756
 
@@ -775,7 +742,7 @@ print(metadata.features["label"].names)
 
 
 
-```
+```python
 IMG_SIZE = 150
 malaria = ImageClassifier(train_ds, test_ds, metadata, IMG_SIZE, IMG_SIZE, 
                                augment=True, dropout=True)
